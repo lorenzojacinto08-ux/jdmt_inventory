@@ -1,4 +1,6 @@
 from flask import Flask, render_template
+from flask import send_file
+from generate_po import generate_po
 
 app = Flask(__name__)
 
@@ -114,6 +116,10 @@ def transaction_2():
 def request_detail():
     return render_template("transactions/request_detail.html")
 
+@app.route("/accept-request/<order_id>")
+def accept_request(order_id):
+    pdf_file = generate_po(order_id)
+    return send_file(f"static/{pdf_file}", mimetype="application/pdf")
 
 @app.route("/transaction/3")
 def transaction_3():
