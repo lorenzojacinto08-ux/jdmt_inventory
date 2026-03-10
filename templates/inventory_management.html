@@ -9,6 +9,80 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+.management-card {
+  transition: all 0.3s ease;
+  border: 1px solid #e2e8f0;
+  background: #ffffff;
+  background-image: 
+    radial-gradient(circle at 10% 20%, rgba(255,255,255,0.8) 0%, transparent 50%),
+    linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  color: #2d3748;
+  height: 140px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06);
+  position: relative;
+  overflow: hidden;
+}
+.management-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: #1d4ed8;
+}
+.management-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+  border-color: #cbd5e0;
+}
+.management-icon {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+  color: #1d4ed8;
+}
+.management-title {
+  font-weight: 600;
+  font-size: 0.95rem;
+  line-height: 1.2;
+  color: #1d4ed8;
+}
+.main {
+  background: 
+    radial-gradient(circle at 20% 80%, rgba(29, 78, 216, 0.05) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(29, 78, 216, 0.05) 0%, transparent 50%),
+    linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  min-height: 100vh;
+  position: relative;
+}
+.main::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: 
+    radial-gradient(circle at 25% 25%, rgba(255,255,255,0.1) 0%, transparent 2%),
+    radial-gradient(circle at 75% 75%, rgba(255,255,255,0.1) 0%, transparent 2%);
+  background-size: 50px 50px;
+  pointer-events: none;
+}
+.container {
+  padding-bottom: 2rem;
+  position: relative;
+  z-index: 1;
+}
+.page-title {
+  color: #2d3748;
+  font-weight: 700;
+  margin-bottom: 2rem;
+  text-align: center;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+</style>
 </head>
 <body>
 
@@ -16,19 +90,73 @@
 
 <main class="main">
   <div class="container">
-    
-    
-    <div class="row g-3 mt-4">
-      {% for i in range(1, 9) %}
-      <div class="col-md-4 col-sm-6">
-        <a href="/management/{{ i }}" class="btn btn-outline-success w-100 p-4 text-center text-decoration-none">
-          <div class="d-flex flex-column align-items-center">
-            <div class="fs-2 fw-bold mb-2">{{ i }}</div>
-            <div class="fs-6">Management {{ i }}</div>
+    <h1 class="page-title mt-4">Inventory Management</h1>
+
+    <div class="row g-3">
+      <div class="col-lg-3 col-md-4 col-sm-6">
+        <a href="/management/1" class="btn management-card w-100 p-3 text-center text-decoration-none rounded-3">
+          <div class="d-flex flex-column align-items-center justify-content-center h-100">
+            <i class="fas fa-file-invoice-dollar management-icon"></i>
+            <div class="management-title">Supplier Billing Control</div>
           </div>
         </a>
       </div>
-      {% endfor %}
+      <div class="col-lg-3 col-md-4 col-sm-6">
+        <a href="/management/2" class="btn management-card w-100 p-3 text-center text-decoration-none rounded-3">
+          <div class="d-flex flex-column align-items-center justify-content-center h-100">
+            <i class="fas fa-calculator management-icon"></i>
+            <div class="management-title">Manual Menu Item Total</div>
+          </div>
+        </a>
+      </div>
+      <div class="col-lg-3 col-md-4 col-sm-6">
+        <a href="/management/3" class="btn management-card w-100 p-3 text-center text-decoration-none rounded-3">
+          <div class="d-flex flex-column align-items-center justify-content-center h-100">
+            <i class="fas fa-file-import management-icon"></i>
+            <div class="management-title">Import Menu Item Total</div>
+          </div>
+        </a>
+      </div>
+      <div class="col-lg-3 col-md-4 col-sm-6">
+        <a href="/management/4" class="btn management-card w-100 p-3 text-center text-decoration-none rounded-3">
+          <div class="d-flex flex-column align-items-center justify-content-center h-100">
+            <i class="fas fa-sync-alt management-icon"></i>
+            <div class="management-title">Recalculate MI Usage</div>
+          </div>
+        </a>
+      </div>
+      <div class="col-lg-3 col-md-4 col-sm-6">
+        <a href="/management/5" class="btn management-card w-100 p-3 text-center text-decoration-none rounded-3">
+          <div class="d-flex flex-column align-items-center justify-content-center h-100">
+            <i class="fas fa-eye management-icon"></i>
+            <div class="management-title">View Stock on Hand</div>
+          </div>
+        </a>
+      </div>
+      <div class="col-lg-3 col-md-4 col-sm-6">
+        <a href="/management/6" class="btn management-card w-100 p-3 text-center text-decoration-none rounded-3">
+          <div class="d-flex flex-column align-items-center justify-content-center h-100">
+            <i class="fas fa-exclamation-triangle management-icon"></i>
+            <div class="management-title">Stuck Opening Adjustment</div>
+          </div>
+        </a>
+      </div>
+      <div class="col-lg-3 col-md-4 col-sm-6">
+        <a href="/management/7" class="btn management-card w-100 p-3 text-center text-decoration-none rounded-3">
+          <div class="d-flex flex-column align-items-center justify-content-center h-100">
+            <i class="fas fa-clipboard-list management-icon"></i>
+            <div class="management-title">Stock Requirements</div>
+          </div>
+        </a>
+      </div>
+      <div class="col-lg-3 col-md-4 col-sm-6">
+        <a href="/management/8" class="btn management-card w-100 p-3 text-center text-decoration-none rounded-3">
+          <div class="d-flex flex-column align-items-center justify-content-center h-100">
+            <i class="fas fa-sliders-h management-icon"></i>
+            <div class="management-title">Stock Adjustment</div>
+          </div>
+        </a>
+      </div>
     </div>
   </div>
 </main>

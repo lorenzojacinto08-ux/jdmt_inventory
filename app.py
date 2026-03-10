@@ -18,6 +18,10 @@ def inventory_management():
 def config():
     return render_template("config.html")
 
+@app.route("/config/<int:template_id>")
+def config_template(template_id):
+    return render_template(f"config/config_{template_id}.html")
+
 @app.route("/other")
 def other():
     return render_template("other.html")
