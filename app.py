@@ -2,6 +2,24 @@ from flask import Flask, render_template
 
 app = Flask(__name__)
 
+suppliers = {
+    "ABC Trading": [
+        {"code": "JST-110", "name": "Hotdog", "price": 100.00},
+        {"code": "JST-120", "name": "Coffee", "price": 120.00},
+        {"code": "BEV-0210", "name": "Beans", "price": 150.00},
+    ],
+    "Metro Supply": [
+        {"code": "POS-12345", "name": "Thermal Paper", "price": 85.00},
+        {"code": "PRT-2425", "name": "Printer", "price": 1450.00},
+        {"code": "BEV-89456", "name": "Chocolate", "price": 140.00},
+    ],
+    "Prime Goods": [
+        {"code": "FRT-12032", "name": "POS", "price": 430.00},
+        {"code": "PRT-1234", "name": "Printer", "price": 1500.00},
+        {"code": "JST-110", "name": "Hotdog", "price": 95.00},
+    ]
+}
+
 @app.route("/")
 def home():
     return render_template("home.html")
@@ -68,7 +86,9 @@ def product():
 
 @app.route("/transaction/1")
 def transaction_1():
-    return render_template("transactions/transaction_1.html")
+    return render_template("transactions/transaction_1.html", suppliers=suppliers)
+
+
 
 @app.route("/transaction/2")
 def transaction_2():
