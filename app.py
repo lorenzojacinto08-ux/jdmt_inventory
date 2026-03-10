@@ -88,8 +88,6 @@ def product():
 def transaction_1():
     return render_template("transactions/transaction_1.html", suppliers=suppliers)
 
-
-
 @app.route("/transaction/2")
 def transaction_2():
     return render_template("transactions/transaction_2.html")
@@ -153,6 +151,11 @@ def transaction_16():
 @app.route("/transaction/17")
 def transaction_17():
     return render_template("transactions/transaction_17.html")
+
+# NEW ROUTE (Request Approval UI)
+@app.route("/request-approval")
+def request_approval():
+    return render_template("request_approval.html")
 
 @app.route("/<path:any_path>")
 def placeholder(any_path):
