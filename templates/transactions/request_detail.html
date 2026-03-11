@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Request Details</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #f5f5f7;
+            --card: rgba(255, 255, 255, 0.88);
+            --border: rgba(15, 23, 42, 0.08);
+            --text: #0f172a;
+            --muted: #64748b;
+            --soft-muted: #94a3b8;
+            --shadow: 0 24px 60px rgba(15, 23, 42, 0.08);
+            --shadow-soft: 0 12px 24px rgba(15, 23, 42, 0.05);
+
+            --success-bg: #eefbf3;
+            --success-text: #15803d;
+            --success-border: #ccefd9;
+
+            --pending-bg: #fff7db;
+            --pending-text: #a16207;
+
+            --approved-bg: #ecfdf3;
+            --approved-text: #15803d;
+
+            --rejected-bg: #fef2f2;
+            --rejected-text: #b91c1c;
+
+            --btn-green: #22c55e;
+            --btn-green-hover: #16a34a;
+
+            --btn-red: #ef4444;
+            --btn-red-hover: #dc2626;
+
+            --accent: #2563eb;
+            --field-bg: #f8fafc;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", sans-serif;
+            background:
+                radial-gradient(circle at top left, rgba(255,255,255,0.95), transparent 30%),
+                linear-gradient(180deg, #f8fafc 0%, #f5f5f7 100%);
+            color: var(--text);
+            padding: 40px 20px;
+        }
+
+        .wrapper {
+            max-width: 1180px;
+            margin: 0 auto;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 18px;
+            text-decoration: none;
+            color: var(--accent);
+            font-size: 14px;
+            font-weight: 600;
+            transition: 0.2s ease;
+        }
+
+        .back-link:hover {
+            opacity: 0.8;
+        }
+
+        .alert {
+            margin-bottom: 18px;
+            padding: 14px 18px;
+            background: var(--success-bg);
+            border: 1px solid var(--success-border);
+            color: var(--success-text);
+            border-radius: 16px;
+            font-weight: 600;
+            font-size: 14px;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 30px;
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            overflow: hidden;
+        }
+
+        .card-header {
+            padding: 30px 32px 22px;
+            border-bottom: 1px solid rgba(15, 23, 42, 0.06);
+            background: linear-gradient(to bottom, rgba(255,255,255,0.78), rgba(255,255,255,0.58));
+        }
+
+        .card-header h1 {
+            margin: 0;
+            font-size: 32px;
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            color: #0f172a;
+        }
+
+        .card-header p {
+            margin: 8px 0 0;
+            font-size: 15px;
+            color: var(--muted);
+            font-weight: 500;
+        }
+
+        .content {
+            padding: 28px 32px 32px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 18px;
+        }
+
+        .field {
+            background: var(--field-bg);
+            border: 1px solid rgba(15, 23, 42, 0.06);
+            border-radius: 20px;
+            padding: 18px 20px;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.65);
+        }
+
+        .field label {
+            display: block;
+            margin-bottom: 10px;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--muted);
+        }
+
+        .field-value {
+            font-size: 17px;
+            font-weight: 650;
+            color: var(--text);
+            line-height: 1.4;
+            word-break: break-word;
+        }
+
+        .field-value.optional-empty {
+            color: var(--soft-muted);
+            font-weight: 500;
+            font-style: italic;
+        }
+
+        .full {
+            grid-column: 1 / -1;
+        }
+
+        .status {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8px 14px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: capitalize;
+            letter-spacing: 0.02em;
+        }
+
+        .pending {
+            background: var(--pending-bg);
+            color: var(--pending-text);
+        }
+
+        .approved {
+            background: var(--approved-bg);
+            color: var(--approved-text);
+        }
+
+        .rejected {
+            background: var(--rejected-bg);
+            color: var(--rejected-text);
+        }
+
+        .actions {
+            margin-top: 26px;
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            border-radius: 14px;
+            padding: 14px 20px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s ease;
+            box-shadow: var(--shadow-soft);
+            text-decoration: none;
+        }
+
+        .approve {
+            background: var(--btn-green);
+            color: #ffffff;
+        }
+
+        .approve:hover {
+            background: var(--btn-green-hover);
+            transform: translateY(-1px);
+        }
+
+        .reject {
+            background: var(--btn-red);
+            color: #ffffff;
+        }
+
+        .reject:hover {
+            background: var(--btn-red-hover);
+            transform: translateY(-1px);
+        }
+
+        @media (max-width: 1024px) {
+            .wrapper {
+                max-width: 940px;
+            }
+
+            .card-header h1 {
+                font-size: 28px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 24px 14px;
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            .content,
+            .card-header {
+                padding-left: 20px;
+                padding-right: 20px;
+            }
+
+            .actions {
+                flex-direction: column;
+            }
+
+            .actions .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <a href="#" class="back-link">← Back to Request Approval</a>
+
+        <div class="alert">Success message will appear here.</div>
+
+        <div class="card">
+            <div class="card-header">
+                <h1>Order Request Details</h1>
+                <p>Review the complete request information before approving or rejecting the order.</p>
+            </div>
+
+            <div class="content">
+                <div class="grid">
+                    <div class="field">
+                        <label>Order No</label>
+                        <div class="field-value">ORD-0001</div>
+                    </div>
+
+                    <div class="field">
+                        <label>Status</label>
+                        <div class="field-value">
+                            <span class="status pending">Pending</span>
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <label>Item Name</label>
+                        <div class="field-value">Wireless Mouse</div>
+                    </div>
+
+                    <div class="field">
+                        <label>Quantity</label>
+                        <div class="field-value">2</div>
+                    </div>
+
+                    <div class="field">
+                        <label>Price</label>
+                        <div class="field-value">₱600.00</div>
+                    </div>
+
+                    <div class="field">
+                        <label>Total</label>
+                        <div class="field-value">₱1,200.00</div>
+                    </div>
+
+                    <div class="field full">
+                        <label>Remarks (Optional)</label>
+                        <div class="field-value optional-empty">No remarks provided.</div>
+                    </div>
+
+                    <div class="field">
+                        <label>Created At</label>
+                        <div class="field-value">Mar 10, 2026 10:30 AM</div>
+                    </div>
+
+                    <div class="field">
+                        <label>Last Updated</label>
+                        <div class="field-value">Mar 10, 2026 11:15 AM</div>
+                    </div>
+                </div>
+
+                <div class="actions">
+                    <a href="/accept-request/10001" class="btn approve">
+                    ✓ Accept Request
+                    </a>
+                    <a href="#" class="btn reject">✕ Reject Request</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
