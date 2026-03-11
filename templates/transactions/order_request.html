@@ -3,46 +3,704 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Transaction 1 - JDMT</title>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<title>Purchase Order Form</title>
+
+<style>
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+    font-family: "Inter", Arial, sans-serif;
+    background: #eef3f9;
+    color: #0f172a;
+  }
+
+  .page {
+    max-width: 1400px;
+    margin: auto;
+    padding: 24px;
+  }
+
+  .page-title {
+    font-size: 26px;
+    font-weight: 700;
+    margin-bottom: 18px;
+  }
+
+  .supplier-bar {
+    background: #fff;
+    border: 1px solid #dbe4f0;
+    border-radius: 14px;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.05);
+    padding: 18px;
+    margin-bottom: 20px;
+  }
+
+  .supplier-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+
+  .form-group label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 13px;
+    color: #475569;
+    font-weight: 600;
+  }
+
+  .form-group input,
+  .form-group select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font-size: 14px;
+    background: white;
+    outline: none;
+  }
+
+  .layout {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 20px;
+    align-items: start;
+  }
+
+  .left-section {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .card {
+    background: #fff;
+    border-radius: 14px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.05);
+    overflow: hidden;
+  }
+
+  .card-header {
+    background: linear-gradient(90deg,#2563eb,#1d4ed8);
+    color: white;
+    padding: 12px 16px;
+    font-size: 16px;
+    font-weight: 600;
+  }
+
+  .card-body {
+    padding: 16px;
+  }
+
+  .search-box {
+    width: 100%;
+    padding: 9px 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font-size: 14px;
+    margin-bottom: 12px;
+    outline: none;
+  }
+
+  .search-box:focus,
+  .form-group input:focus,
+  .form-group select:focus,
+  .selected-table input:focus,
+  .selected-table select:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+  }
+
+  .table-wrap {
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    overflow-x: auto;
+    background: #fff;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+
+  thead th {
+    background: #f1f5f9;
+    padding: 10px;
+    text-align: left;
+    font-weight: 600;
+    color: #1e3a8a;
+    white-space: nowrap;
+  }
+
+  tbody td {
+    padding: 9px 10px;
+    border-top: 1px solid #e5edf5;
+    vertical-align: middle;
+  }
+
+  tbody tr:hover {
+    background: #f8fbff;
+    cursor: pointer;
+  }
+
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+
+  .selected-table input,
+  .selected-table select {
+    width: 100%;
+    min-width: 90px;
+    padding: 8px 10px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font-size: 13px;
+    background: #fff;
+    outline: none;
+  }
+
+  .selected-table td {
+    min-width: 100px;
+  }
+
+  .selected-table td:last-child {
+    min-width: 130px;
+  }
+
+  .btn {
+    border: none;
+    border-radius: 8px;
+    padding: 9px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s ease;
+  }
+
+  .btn-primary {
+    background: #2563eb;
+    color: white;
+  }
+
+  .btn-primary:hover {
+    background: #1d4ed8;
+  }
+
+  .btn-primary:disabled {
+    background: #93c5fd;
+    cursor: not-allowed;
+  }
+
+  .btn-danger {
+    background: #ef4444;
+    color: white;
+    padding: 6px 10px;
+    font-size: 12px;
+  }
+
+  .btn-danger:hover {
+    background: #dc2626;
+  }
+
+  .receipt-card {
+    background: #ffffff;
+    border-radius: 14px;
+    border: 1px solid #e2e8f0;
+    padding: 16px;
+    height: fit-content;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.05);
+    position: sticky;
+    top: 20px;
+  }
+
+  .receipt-title {
+    font-size: 18px;
+    font-weight: 700;
+    text-align: center;
+  }
+
+  .receipt-subtitle {
+    text-align: center;
+    font-size: 12px;
+    color: #64748b;
+    margin-bottom: 12px;
+  }
+
+  .receipt-meta {
+    border-top: 1px dashed #cbd5e1;
+    border-bottom: 1px dashed #cbd5e1;
+    padding: 10px 0;
+    margin-bottom: 12px;
+    font-size: 13px;
+    line-height: 1.6;
+  }
+
+  .receipt-items {
+    max-height: 300px;
+    overflow-y: auto;
+    margin-bottom: 14px;
+  }
+
+  .receipt-empty {
+    text-align: center;
+    color: #94a3b8;
+    font-size: 14px;
+    padding: 30px 10px;
+  }
+
+  .receipt-item {
+    border-bottom: 1px dashed #e2e8f0;
+    padding: 8px 0;
+  }
+
+  .receipt-item-top {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+
+  .receipt-item-bottom {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    font-size: 13px;
+    color: #64748b;
+    align-items: center;
+  }
+
+  .receipt-summary {
+    border-top: 2px solid #e2e8f0;
+    padding-top: 14px;
+  }
+
+  .summary-row {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+    font-size: 14px;
+    color: #334155;
+  }
+
+  .grand-total {
+    font-size: 18px;
+    font-weight: 700;
+    color: #0f172a;
+  }
+
+  .submit-btn {
+    width: 100%;
+    margin-top: 16px;
+    padding: 12px;
+    font-size: 15px;
+  }
+
+  .helper-text {
+    margin-top: 10px;
+    font-size: 13px;
+    color: #64748b;
+  }
+
+  @media (max-width: 1100px) {
+    .layout {
+      grid-template-columns: 1fr;
+    }
+
+    .receipt-card {
+      position: static;
+    }
+  }
+
+  @media (max-width: 700px) {
+    .form-grid,
+    .supplier-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .page {
+      padding: 14px;
+    }
+
+    .page-title {
+      font-size: 22px;
+    }
+  }
+</style>
 </head>
 <body>
 
-{% include 'header.html' %}
+<div class="page">
+  <div class="page-title">Purchase Order Form</div>
 
-<main class="main">
-  <div class="container">
-    <div class="row">
-      <div class="col-12">
-        <nav aria-label="breadcrumb">
-          <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="/inventory-transactions">Inventory Transactions</a></li>
-            <li class="breadcrumb-item active">Transaction 1</li>
-          </ol>
-        </nav>
+  <div class="supplier-bar">
+    <div class="supplier-grid">
+      <div class="form-group">
+        <label>Select Supplier</label>
+        <select id="supplierSelect">
+          <option value="">-- Choose Supplier First --</option>
+          {% for supplier_name in suppliers | default({}, true) %}
+          <option value="{{ supplier_name }}">{{ supplier_name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Selected Supplier</label>
+        <input type="text" id="selectedSupplierDisplay" value="No supplier selected" readonly>
       </div>
     </div>
-    
-    <div class="row mt-4">
-      <div class="col-12">
-        <div class="card">
-          <div class="card-header">
-            <h1 class="card-title mb-0">Transaction 1</h1>
-          </div>
-          <div class="card-body">
-            <p class="lead">This is the page for Transaction 1.</p>
-            <p>Functionality for this transaction will be implemented here.</p>
-            
-            <div class="mt-4">
-              <a href="/inventory-transactions" class="btn btn-secondary">Back to Inventory Transactions</a>
-            </div>
+    <div class="helper-text">
+      You must select a supplier first before choosing products and placing an order.
+    </div>
+  </div>
+
+  <div class="layout">
+    <div class="left-section" id="orderSection">
+
+      <div class="card">
+        <div class="card-header">Products</div>
+        <div class="card-body">
+          <input type="text" id="searchInput" class="search-box" placeholder="Search item code or product name..." disabled />
+
+          <div class="table-wrap">
+            <table id="productsTable">
+              <thead>
+                <tr>
+                  <th>Item Code</th>
+                  <th>Product Name</th>
+                  <th>Item Price</th>
+                </tr>
+              </thead>
+              <tbody id="productsTableBody">
+                <tr>
+                  <td colspan="3" style="text-align:center; color:#64748b;">Select a supplier first.</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
+
+      <div class="card">
+        <div class="card-header">Selected Item</div>
+        <div class="card-body">
+
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Shipped Via</label>
+              <select id="shippedVia" disabled>
+                <option>For Pickup</option>
+                <option>Delivery</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>Mode of Payment</label>
+              <select id="paymentMode" disabled>
+                <option>Cash</option>
+                <option>GCash</option>
+                <option>Card</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="table-wrap">
+            <table class="selected-table">
+              <thead>
+                <tr>
+                  <th>Item Code</th>
+                  <th>Product Name</th>
+                  <th>Qty</th>
+                  <th>Unit</th>
+                  <th>Unit Price</th>
+                  <th>Total</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><input type="text" id="itemCode" readonly></td>
+                  <td><input type="text" id="productName" readonly></td>
+                  <td><input type="number" id="qty" value="1" min="1" disabled></td>
+                  <td>
+                    <select id="unit" disabled>
+                      <option>Piece</option>
+                      <option>Box</option>
+                      <option>Pack</option>
+                    </select>
+                  </td>
+                  <td><input type="text" id="unitPrice" readonly></td>
+                  <td><input type="text" id="lineTotal" readonly></td>
+                  <td>
+                    <button class="btn btn-primary" type="button" id="addOrderBtn" disabled>Add to Order</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+      </div>
+
     </div>
+
+    <div class="receipt-card">
+      <div class="receipt-title">Order Receipt</div>
+      <div class="receipt-subtitle">Live order summary</div>
+
+      <div class="receipt-meta">
+        <div><strong>Supplier:</strong> <span id="receiptSupplier">None</span></div>
+        <div><strong>Shipped Via:</strong> <span id="receiptShippedVia">For Pickup</span></div>
+        <div><strong>Payment:</strong> <span id="receiptPaymentMode">Cash</span></div>
+      </div>
+
+      <div class="receipt-items" id="receiptItems">
+        <div class="receipt-empty">
+          No items added yet.
+        </div>
+      </div>
+
+      <div class="receipt-summary">
+        <div class="summary-row">
+          <span>Total Items</span>
+          <span id="receiptItemCount">0</span>
+        </div>
+
+        <div class="summary-row grand-total">
+          <span>Grand Total</span>
+          <span id="receiptGrandTotal">₱ 0.00</span>
+        </div>
+
+        <button class="btn btn-primary submit-btn" type="button" id="submitOrderBtn">
+          Submit Order
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const supplierProducts = {{ suppliers | default({}, true) | tojson }};
+
+  const supplierSelect = document.getElementById('supplierSelect');
+  const selectedSupplierDisplay = document.getElementById('selectedSupplierDisplay');
+  const receiptSupplier = document.getElementById('receiptSupplier');
+
+  const productsTableBody = document.getElementById('productsTableBody');
+  const searchInput = document.getElementById('searchInput');
+
+  const itemCode = document.getElementById('itemCode');
+  const productName = document.getElementById('productName');
+  const qty = document.getElementById('qty');
+  const unit = document.getElementById('unit');
+  const unitPrice = document.getElementById('unitPrice');
+  const lineTotal = document.getElementById('lineTotal');
+  const addOrderBtn = document.getElementById('addOrderBtn');
+
+  const shippedVia = document.getElementById('shippedVia');
+  const paymentMode = document.getElementById('paymentMode');
+  const receiptShippedVia = document.getElementById('receiptShippedVia');
+  const receiptPaymentMode = document.getElementById('receiptPaymentMode');
+
+  const receiptItems = document.getElementById('receiptItems');
+  const receiptItemCount = document.getElementById('receiptItemCount');
+  const receiptGrandTotal = document.getElementById('receiptGrandTotal');
+  const submitOrderBtn = document.getElementById('submitOrderBtn');
+
+  let currentProducts = [];
+  let orderList = [];
+
+  function formatPeso(value) {
+    return '₱ ' + Number(value).toLocaleString('en-PH', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+  }
+
+  function updateLineTotal() {
+    const price = parseFloat(unitPrice.value || 0);
+    const quantity = parseInt(qty.value || 0);
+    const total = price * quantity;
+    lineTotal.value = total ? total.toFixed(2) : '';
+  }
+
+  function clearSelectedItem() {
+    itemCode.value = '';
+    productName.value = '';
+    qty.value = 1;
+    unitPrice.value = '';
+    lineTotal.value = '';
+  }
+
+  function renderProducts(products) {
+    productsTableBody.innerHTML = '';
+
+    if (!products.length) {
+      productsTableBody.innerHTML = '<tr><td colspan="3" style="text-align:center; color:#64748b;">No products available for this supplier.</td></tr>';
+      return;
+    }
+
+    products.forEach(product => {
+      const row = document.createElement('tr');
+      row.dataset.code = product.code;
+      row.dataset.name = product.name;
+      row.dataset.price = product.price;
+
+      row.innerHTML = `
+        <td>${product.code}</td>
+        <td>${product.name}</td>
+        <td>${Number(product.price).toLocaleString('en-PH', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+      `;
+
+      row.addEventListener('click', () => {
+        itemCode.value = product.code;
+        productName.value = product.name;
+        unitPrice.value = parseFloat(product.price).toFixed(2);
+        qty.value = 1;
+        updateLineTotal();
+      });
+
+      productsTableBody.appendChild(row);
+    });
+  }
+
+  function renderReceipt() {
+    receiptItems.innerHTML = '';
+
+    if (orderList.length === 0) {
+      receiptItems.innerHTML = '<div class="receipt-empty">No items added yet.</div>';
+      receiptItemCount.textContent = '0';
+      receiptGrandTotal.textContent = '₱ 0.00';
+      return;
+    }
+
+    let totalItems = 0;
+    let grandTotal = 0;
+
+    orderList.forEach((item, index) => {
+      totalItems += item.qty;
+      grandTotal += item.total;
+
+      const itemDiv = document.createElement('div');
+      itemDiv.className = 'receipt-item';
+      itemDiv.innerHTML = `
+        <div class="receipt-item-top">
+          <span>${item.name}</span>
+          <span>${formatPeso(item.total)}</span>
+        </div>
+        <div class="receipt-item-bottom">
+          <span>${item.qty} x ${formatPeso(item.price)} (${item.unit})</span>
+          <button type="button" class="btn btn-danger" onclick="removeOrder(${index})">Remove</button>
+        </div>
+      `;
+      receiptItems.appendChild(itemDiv);
+    });
+
+    receiptItemCount.textContent = totalItems;
+    receiptGrandTotal.textContent = formatPeso(grandTotal);
+  }
+
+  function removeOrder(index) {
+    orderList.splice(index, 1);
+    renderReceipt();
+  }
+
+  window.removeOrder = removeOrder;
+
+  supplierSelect.addEventListener('change', () => {
+    const selectedSupplier = supplierSelect.value;
+
+    clearSelectedItem();
+    orderList = [];
+    renderReceipt();
+
+    if (!selectedSupplier) {
+      selectedSupplierDisplay.value = 'No supplier selected';
+      receiptSupplier.textContent = 'None';
+      currentProducts = [];
+      renderProducts([]);
+      searchInput.disabled = true;
+      shippedVia.disabled = true;
+      paymentMode.disabled = true;
+      qty.disabled = true;
+      unit.disabled = true;
+      addOrderBtn.disabled = true;
+      return;
+    }
+
+    selectedSupplierDisplay.value = selectedSupplier;
+    receiptSupplier.textContent = selectedSupplier;
+
+    currentProducts = supplierProducts[selectedSupplier] || [];
+    renderProducts(currentProducts);
+
+    searchInput.disabled = false;
+    shippedVia.disabled = false;
+    paymentMode.disabled = false;
+    qty.disabled = false;
+    unit.disabled = false;
+    addOrderBtn.disabled = false;
+  });
+
+  qty.addEventListener('input', updateLineTotal);
+
+  addOrderBtn.addEventListener('click', () => {
+    if (!supplierSelect.value) {
+      alert('Please select a supplier first.');
+      return;
+    }
+
+    if (!itemCode.value || !productName.value || !unitPrice.value) {
+      alert('Please select a product first.');
+      return;
+    }
+
+    const orderItem = {
+      supplier: supplierSelect.value,
+      code: itemCode.value,
+      name: productName.value,
+      qty: parseInt(qty.value),
+      unit: unit.value,
+      price: parseFloat(unitPrice.value),
+      total: parseFloat(lineTotal.value)
+    };
+
+    orderList.push(orderItem);
+    renderReceipt();
+    clearSelectedItem();
+  });
+
+  searchInput.addEventListener('keyup', () => {
+    const keyword = searchInput.value.toLowerCase();
+    const filtered = currentProducts.filter(product =>
+      product.code.toLowerCase().includes(keyword) ||
+      product.name.toLowerCase().includes(keyword)
+    );
+    renderProducts(filtered);
+  });
+
+  shippedVia.addEventListener('change', () => {
+    receiptShippedVia.textContent = shippedVia.value;
+  });
+
+  paymentMode.addEventListener('change', () => {
+    receiptPaymentMode.textContent = paymentMode.value;
+  });
+
+  submitOrderBtn.addEventListener('click', () => {
+    alert('Submit Order button clicked.');
+  });
+</script>
+
 </body>
 </html>
