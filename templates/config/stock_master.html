@@ -1,39 +1,779 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Config 1 - JDMT</title>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Inventory Item Detail</title>
+  <style>
+    :root{
+      --bg: #f5f6f8;
+      --panel: #ffffff;
+      --muted: #6b7280;
+      --text: #111827;
+      --line: #e5e7eb;
+      --soft: #f9fafb;
+      --tab: #eef1f5;
+      --tab-border: #d9dde3;
+      --primary: #111827;
+      --primary-hover: #1f2937;
+      --danger: #ef4444;
+      --blue-soft: #dbeafe;
+      --blue: #2563eb;
+      --shadow: 0 12px 30px rgba(17, 24, 39, 0.06);
+      --radius-xl: 22px;
+      --radius-lg: 18px;
+      --radius-md: 12px;
+      --radius-sm: 10px;
+    }
+
+    *{
+      box-sizing: border-box;
+    }
+
+    body{
+      margin: 0;
+      font-family: "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    .app{
+      min-height: 100vh;
+      padding: 22px;
+    }
+
+    .wrapper{
+      display: grid;
+      grid-template-columns: 1fr 1.45fr;
+      gap: 20px;
+      max-width: 1440px;
+      margin: 0 auto;
+    }
+
+    .panel{
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow);
+      padding: 18px;
+    }
+
+    .section-title{
+      font-size: 24px;
+      font-weight: 700;
+      margin: 0 0 14px 0;
+      letter-spacing: -0.02em;
+    }
+
+    .table-wrap{
+      background: #fbfbfc;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      overflow: hidden;
+      min-height: 720px;
+    }
+
+    table{
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    thead th{
+      text-align: left;
+      background: #f3f4f6;
+      color: #374151;
+      font-size: 14px;
+      font-weight: 700;
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    tbody tr{
+      transition: 0.2s ease;
+      cursor: pointer;
+    }
+
+    tbody tr:nth-child(even){
+      background: #fafafa;
+    }
+
+    tbody tr:hover{
+      background: var(--blue-soft);
+    }
+
+    tbody td{
+      padding: 11px 14px;
+      border-bottom: 1px solid #f0f2f5;
+      font-size: 14px;
+      color: #374151;
+    }
+
+    .empty-table{
+      text-align: center;
+      color: var(--muted);
+      padding: 28px 14px;
+      font-size: 14px;
+    }
+
+    .tabs{
+      display: flex;
+      gap: 8px;
+      margin-bottom: 0;
+      flex-wrap: wrap;
+    }
+
+    .tab-btn{
+      border: 1px solid var(--tab-border);
+      background: var(--tab);
+      color: #4b5563;
+      padding: 10px 22px;
+      border-radius: 12px 12px 0 0;
+      font-weight: 700;
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+
+    .tab-btn.active{
+      background: #fff;
+      color: var(--text);
+      position: relative;
+      z-index: 2;
+      border-bottom: 1px solid #fff;
+    }
+
+    .tab-content{
+      border: 1px solid var(--line);
+      border-radius: 0 18px 18px 18px;
+      background: #fff;
+      padding: 16px;
+      margin-top: -1px;
+      min-height: 720px;
+    }
+
+    .required{
+      text-align: right;
+      color: var(--danger);
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .form-card,
+    .mac-card{
+      background: #fafafa;
+      border: 1px solid #eceef2;
+      border-radius: var(--radius-lg);
+      padding: 22px;
+    }
+
+    .form-grid{
+      display: grid;
+      grid-template-columns: 180px 1fr;
+      gap: 18px 20px;
+      align-items: center;
+    }
+
+    .label,
+    .field-label{
+      font-size: 14px;
+      font-weight: 600;
+      color: #374151;
+    }
+
+    input[type="text"],
+    select,
+    textarea{
+      width: 100%;
+      padding: 11px 13px;
+      border: 1px solid #d1d5db;
+      border-radius: 10px;
+      background: #fff;
+      font-size: 14px;
+      color: var(--text);
+      outline: none;
+    }
+
+    input[type="text"]:focus,
+    select:focus,
+    textarea:focus{
+      border-color: #60a5fa;
+      box-shadow: 0 0 0 3px rgba(96,165,250,0.15);
+    }
+
+    .inline-row{
+      display: flex;
+      gap: 14px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .check{
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      color: #374151;
+      white-space: nowrap;
+    }
+
+    .bottom-actions{
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    .btn{
+      border: none;
+      border-radius: 12px;
+      padding: 12px 18px;
+      min-width: 110px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+
+    .btn-secondary{
+      background: #f3f4f6;
+      color: var(--text);
+      border: 1px solid #d1d5db;
+    }
+
+    .btn-secondary:hover{
+      background: #e5e7eb;
+    }
+
+    .btn-primary{
+      background: var(--primary);
+      color: #fff;
+    }
+
+    .btn-primary:hover{
+      background: var(--primary-hover);
+    }
+
+    .detail2-stack,
+    .detail3-stack,
+    .options-stack{
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .mac-card-title{
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      font-size: 15px;
+      font-weight: 700;
+      color: #374151;
+    }
+
+    .required-note{
+      color: #d14b4b;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .d2-grid{
+      display: grid;
+      grid-template-columns: 180px minmax(140px, 220px) 120px minmax(140px, 220px);
+      gap: 14px 14px;
+      align-items: center;
+    }
+
+    .d2-grid-qty{
+      display: grid;
+      grid-template-columns: 180px minmax(180px, 220px) 60px;
+      gap: 14px 14px;
+      align-items: center;
+    }
+
+    .unit-text{
+      font-size: 14px;
+      font-weight: 600;
+      color: #4b5563;
+    }
+
+    .mac-input,
+    .mac-select{
+      width: 100%;
+      height: 42px;
+      border: 1px solid #d1d5db;
+      border-radius: 12px;
+      background: #fff;
+      padding: 0 14px;
+      font-size: 14px;
+      color: #111827;
+      outline: none;
+      transition: 0.2s ease;
+    }
+
+    .mac-input:focus,
+    .mac-select:focus{
+      border-color: #60a5fa;
+      box-shadow: 0 0 0 3px rgba(96,165,250,0.15);
+    }
+
+    .number-input{
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .factor-wrap{
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .req-star{
+      position: absolute;
+      right: 12px;
+      color: #d14b4b;
+      font-weight: 700;
+      font-size: 14px;
+      pointer-events: none;
+    }
+
+    .has-star{
+      padding-right: 28px;
+    }
+
+    .d3-grid{
+      display: grid;
+      grid-template-columns: 180px minmax(280px, 1fr);
+      gap: 18px 20px;
+      align-items: center;
+    }
+
+    .tax-box{
+      border: 1px solid #d1d5db;
+      border-radius: 14px;
+      background: #fff;
+      padding: 8px;
+      max-width: 520px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      min-height: 220px;
+    }
+
+    .tax-item{
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 10px;
+      border-radius: 10px;
+      font-size: 14px;
+      color: #374151;
+      transition: 0.2s ease;
+      cursor: pointer;
+    }
+
+    .tax-item:hover{
+      background: #eff6ff;
+    }
+
+    .tax-item.active{
+      background: var(--blue);
+      color: #fff;
+    }
+
+    .tax-item input{
+      margin: 0;
+    }
+
+    .mac-textarea{
+      width: 100%;
+      min-height: 120px;
+      border: 1px solid #d1d5db;
+      border-radius: 12px;
+      background: #fff;
+      padding: 12px 14px;
+      font-size: 14px;
+      color: #111827;
+      outline: none;
+      resize: vertical;
+      font-family: "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
+    }
+
+    .options-list{
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      max-width: 700px;
+      min-height: 260px;
+    }
+
+    @media (max-width: 1100px){
+      .wrapper{
+        grid-template-columns: 1fr;
+      }
+
+      .tab-content{
+        border-radius: 18px;
+      }
+    }
+
+    @media (max-width: 900px){
+      .d2-grid,
+      .d2-grid-qty,
+      .d3-grid{
+        grid-template-columns: 1fr;
+      }
+
+      .unit-text{
+        margin-top: -6px;
+      }
+
+      .tax-box{
+        max-width: 100%;
+      }
+    }
+
+    @media (max-width: 700px){
+      .app{
+        padding: 14px;
+      }
+
+      .panel{
+        padding: 14px;
+      }
+
+      .form-grid{
+        grid-template-columns: 1fr;
+      }
+
+      .section-title{
+        font-size: 20px;
+      }
+
+      .tab-btn{
+        width: 100%;
+        border-radius: 12px;
+      }
+
+      .tabs{
+        flex-direction: column;
+      }
+
+      .tab-content{
+        margin-top: 12px;
+      }
+
+      .bottom-actions{
+        flex-direction: column;
+      }
+
+      .btn{
+        width: 100%;
+      }
+    }
+  </style>
 </head>
 <body>
+  <div class="app">
+    <div class="wrapper">
 
-{% include 'header.html' %}
+      <!-- LEFT PANEL -->
+      <div class="panel">
+        <h2 class="section-title">Items</h2>
 
-<main class="main">
-  <div class="container">
-    <h1>Configuration 1</h1>
-    <p>Configuration settings for template 1.</p>
-    
-    <div class="row mt-4">
-      <div class="col-12">
-        <div class="card">
-          <div class="card-header">
-            <h3>Config 1 Settings</h3>
-          </div>
-          <div class="card-body">
-            <p>This is the configuration page for Config 1. Add your specific configuration options here.</p>
-            <a href="{{ url_for('config') }}" class="btn btn-secondary">Back to Config</a>
-          </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th style="width: 140px;">Code</th>
+                <th>Name</th>
+              </tr>
+            </thead>
+            <tbody id="itemTableBody">
+              <tr>
+                <td colspan="2" class="empty-table">No items available</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
+
+      <!-- RIGHT PANEL -->
+      <div class="panel">
+        <h2 class="section-title">Item Configuration</h2>
+
+        <div class="tabs">
+          <button class="tab-btn active" onclick="openTab(event, 'detail1')">Detail 1</button>
+          <button class="tab-btn" onclick="openTab(event, 'detail2')">Detail 2</button>
+          <button class="tab-btn" onclick="openTab(event, 'detail3')">Detail 3</button>
+          <button class="tab-btn" onclick="openTab(event, 'options')">Options</button>
+        </div>
+
+        <div class="tab-content">
+
+          <!-- DETAIL 1 -->
+          <div class="tab-pane" id="detail1">
+            <div class="required">(* Required)</div>
+
+            <div class="form-card">
+              <div class="form-grid">
+                <div class="label">Group</div>
+                <div>
+                  <select>
+                    <option value="" selected disabled>Select group</option>
+                  </select>
+                </div>
+
+                <div class="label">Cycle</div>
+                <div>
+                  <select>
+                    <option value="" selected disabled>Select cycle</option>
+                  </select>
+                </div>
+
+                <div class="label">Linked Item</div>
+                <div class="inline-row">
+                  <select style="flex: 1 1 260px;">
+                    <option value="" selected>Select linked item</option>
+                  </select>
+
+                  <label class="check">
+                    <input type="checkbox" />
+                    Inactive Item
+                  </label>
+
+                  <label class="check">
+                    <input type="checkbox" />
+                    Master Item
+                  </label>
+                </div>
+
+                <div class="label">Recipe</div>
+                <div class="inline-row">
+                  <input type="text" placeholder="Enter recipe" style="flex: 1 1 260px;" />
+                  <label class="check">
+                    <input type="checkbox" />
+                    Batch Recipe
+                  </label>
+                </div>
+
+                <div class="label">Preferred Supplier</div>
+                <div>
+                  <select>
+                    <option value="" selected disabled>Select preferred supplier</option>
+                  </select>
+                </div>
+
+                <div class="label">Supplier 2</div>
+                <div>
+                  <select>
+                    <option value="" selected>Select supplier 2</option>
+                  </select>
+                </div>
+
+                <div class="label">Supplier 3</div>
+                <div>
+                  <select>
+                    <option value="" selected>Select supplier 3</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="bottom-actions">
+              <button class="btn btn-secondary" type="button">Cancel</button>
+              <button class="btn btn-primary" type="button">Save</button>
+            </div>
+          </div>
+
+          <!-- DETAIL 2 -->
+          <div class="tab-pane" id="detail2" style="display:none;">
+            <div class="detail2-stack">
+
+              <div class="mac-card">
+                <div class="mac-card-title">
+                  <span>Unit Of Measurement (UOM)</span>
+                  <span class="required-note">(* Required)</span>
+                </div>
+
+                <div class="d2-grid">
+                  <div class="field-label">Purchase UOM</div>
+                  <select class="mac-select">
+                    <option value="" selected disabled>Select UOM</option>
+                  </select>
+
+                  <div class="field-label">P/I Factor</div>
+                  <div class="factor-wrap">
+                    <input type="text" class="mac-input number-input has-star" placeholder="0.0000">
+                    <span class="req-star">*</span>
+                  </div>
+
+                  <div class="field-label">Inventory UOM</div>
+                  <select class="mac-select">
+                    <option value="" selected disabled>Select UOM</option>
+                  </select>
+
+                  <div class="field-label">I/R Factor</div>
+                  <div class="factor-wrap">
+                    <input type="text" class="mac-input number-input has-star" placeholder="0.0000">
+                    <span class="req-star">*</span>
+                  </div>
+
+                  <div class="field-label">Recipe UOM</div>
+                  <select class="mac-select">
+                    <option value="" selected disabled>Select UOM</option>
+                  </select>
+
+                  <div></div>
+                  <div></div>
+                </div>
+              </div>
+
+              <div class="mac-card">
+                <div class="d2-grid-qty">
+                  <div class="field-label">Reorder Level</div>
+                  <input type="text" class="mac-input number-input" placeholder="0.0000">
+                  <div class="unit-text">-</div>
+
+                  <div class="field-label">Maximum Qty</div>
+                  <input type="text" class="mac-input number-input" placeholder="0.0000">
+                  <div class="unit-text">-</div>
+
+                  <div class="field-label">Order Limit</div>
+                  <input type="text" class="mac-input number-input" placeholder="0.0000">
+                  <div class="unit-text">-</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- DETAIL 3 -->
+          <div class="tab-pane" id="detail3" style="display:none;">
+            <div class="detail3-stack">
+              <div class="mac-card">
+                <div class="d3-grid">
+                  <div class="field-label">Barcode</div>
+                  <div>
+                    <input type="text" class="mac-input" placeholder="Enter barcode">
+                  </div>
+
+                  <div class="field-label" style="align-self:start; padding-top:10px;">Tax</div>
+                  <div>
+                    <div class="tax-box">
+                      <label class="tax-item">
+                        <input type="checkbox">
+                        <span>Tax Option 1</span>
+                      </label>
+                      <label class="tax-item">
+                        <input type="checkbox">
+                        <span>Tax Option 2</span>
+                      </label>
+                      <label class="tax-item">
+                        <input type="checkbox">
+                        <span>Tax Option 3</span>
+                      </label>
+                      <label class="tax-item">
+                        <input type="checkbox">
+                        <span>Tax Option 4</span>
+                      </label>
+                      <label class="tax-item">
+                        <input type="checkbox">
+                        <span>Tax Option 5</span>
+                      </label>
+                      <label class="tax-item">
+                        <input type="checkbox">
+                        <span>Tax Option 6</span>
+                      </label>
+                      <label class="tax-item">
+                        <input type="checkbox">
+                        <span>Tax Option 7</span>
+                      </label>
+                      <label class="tax-item">
+                        <input type="checkbox">
+                        <span>Tax Option 8</span>
+                      </label>
+                    </div>
+                  </div>
+
+                  <div class="field-label" style="align-self:start; padding-top:10px;">Remarks</div>
+                  <div>
+                    <textarea class="mac-textarea" placeholder="Enter remarks"></textarea>
+                  </div>
+
+                  <div class="field-label">Material Coefficient</div>
+                  <div style="max-width:260px;">
+                    <input type="text" class="mac-input number-input" placeholder="0.0000">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- OPTIONS -->
+          <div class="tab-pane" id="options" style="display:none;">
+            <div class="options-stack">
+              <div class="mac-card">
+                <div class="options-list">
+                  <label class="tax-item">
+                    <input type="checkbox">
+                    <span>Option 1</span>
+                  </label>
+
+                  <label class="tax-item">
+                    <input type="checkbox">
+                    <span>Option 2</span>
+                  </label>
+
+                  <label class="tax-item">
+                    <input type="checkbox">
+                    <span>Option 3</span>
+                  </label>
+
+                  <label class="tax-item">
+                    <input type="checkbox">
+                    <span>Option 4</span>
+                  </label>
+
+                  <label class="tax-item">
+                    <input type="checkbox">
+                    <span>Option 5</span>
+                  </label>
+
+                  <label class="tax-item">
+                    <input type="checkbox">
+                    <span>Option 6</span>
+                  </label>
+
+                  <label class="tax-item">
+                    <input type="checkbox">
+                    <span>Option 7</span>
+                  </label>
+
+                  <label class="tax-item">
+                    <input type="checkbox">
+                    <span>Option 8</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
     </div>
   </div>
-</main>
 
+  <script>
+    function openTab(event, tabId) {
+      const panes = document.querySelectorAll(".tab-pane");
+      const buttons = document.querySelectorAll(".tab-btn");
+
+      panes.forEach(pane => pane.style.display = "none");
+      buttons.forEach(btn => btn.classList.remove("active"));
+
+      document.getElementById(tabId).style.display = "block";
+      event.currentTarget.classList.add("active");
+    }
+  </script>
 </body>
 </html>
