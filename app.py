@@ -23,14 +23,25 @@ suppliers = {
 }
 
 
+# LOGIN PAGE (FIRST PAGE)
 @app.route("/")
+def login():
+    return render_template("login.html")
+
+
+# MAIN DASHBOARD AFTER LOGIN
+@app.route("/home")
 def home():
     return render_template("home.html")
 
+
+# INVENTORY TRANSACTIONS
 @app.route("/inventory-transactions")
 def inventory_transactions():
     return render_template("inventory_transactions.html")
 
+
+# INVENTORY MANAGEMENT
 @app.route("/inventory-management")
 def inventory_management():
     return render_template("inventory_management.html")
