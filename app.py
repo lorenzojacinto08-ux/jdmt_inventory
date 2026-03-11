@@ -28,6 +28,9 @@ suppliers = {
 def login():
     return render_template("login.html")
 
+@app.route("/signin")
+def signin():
+    return render_template("signin.html")
 
 # MAIN DASHBOARD AFTER LOGIN
 @app.route("/home")
